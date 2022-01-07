@@ -137,15 +137,11 @@ class WebrtcPubsub extends utils.Adapter {
             });
 
         const messageListener: MessageListener = (topic, { state }) => {
-            this.log.info(`New message "${topic}: ${state}"`);
-
             if (!isSupportedState(state)) return;
 
             this.setForeignState(topic, state);
         };
         const subscriptionsListener: SubscriptionListener = async (operation, topics) => {
-            this.log.info(`New subscription "${operation}: ${topics.join(', ')}"`);
-
             if (operation) {
                 for (const topic of topics) {
                     const currentState = await this.getForeignStateAsync(topic);
@@ -155,19 +151,19 @@ class WebrtcPubsub extends utils.Adapter {
                 }
             }
 
-            const newSubscribedStates = new Set(topics);
-            this.log.info(`New subscribed states: ${[...newSubscribedStates.values()].join(', ')}`);
+            const affectedStates = new Set(topics);
             const currentSubscribedStates = new Set(this.subscribedStates);
-            this.log.info(`Current subscribed states: ${[...currentSubscribedStates.values()].join(', ')}`);
 
-            const diff = new Set([...currentSubscribedStates].filter((topic) => !newSubscribedStates.has(topic)));
+            const diff =
+                operation === 'subscribe'
+                    ? [...affectedStates].filter((topic) => !currentSubscribedStates.has(topic))
+                    : [...currentSubscribedStates].filter((topic) => affectedStates.has(topic));
             this.log.info(`Diff states: ${[...diff.values()].join(', ')}`);
 
             for (const topic of diff) {
                 if (operation === 'subscribe') {
                     this.subscribedStates.add(topic);
                     this.subscribeForeignStatesAsync(topic);
-                    this.log.info(`Subscribed state "${topic}"`);
                 } else {
                     this.subscribedStates.delete(topic);
                     this.unsubscribeForeignStatesAsync(topic);
@@ -219,8 +215,6 @@ class WebrtcPubsub extends utils.Adapter {
      * Is called if a subscribed state changes
      */
     private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
-        this.log.info(`state ${id} changed: ${JSON.stringify(state)}`);
-
         if (state) {
             this.pubsubServer.publish(id, { state: state.val });
         }
