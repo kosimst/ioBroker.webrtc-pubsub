@@ -143,8 +143,16 @@ class WebrtcPubsub extends utils.Adapter {
 
             this.setForeignState(topic, state);
         };
-        const subscriptionsListener: SubscriptionListener = (operation, topics) => {
-            this.log.debug(`New subscription "${operation}: ${topics.join(', ')}"`);
+        const subscriptionsListener: SubscriptionListener = async (operation, topics) => {
+            if (operation) {
+                for (const topic of topics) {
+                    const currentState = await this.getForeignStateAsync(topic);
+                    if (!currentState) continue;
+                    const { val } = currentState;
+                    this.pubsubServer.publish(topic, { state: val });
+                }
+            }
+
             const newSubscribedStates = new Set(topics);
             const currentSubscribedStates = new Set(this.subscribedStates);
 
