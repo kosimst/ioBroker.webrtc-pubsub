@@ -142,7 +142,6 @@ class WebrtcPubsub extends utils.Adapter {
                 return;
             this.setForeignState(topic, state);
         };
-        this.pubsubServer.addMessageListener(messageListener);
         const subscriptionsListener = (operation, topics) => {
             this.log.debug(`New subscription "${operation}: ${topics.join(', ')}"`);
             const newSubscribedStates = new Set(topics);
@@ -159,6 +158,8 @@ class WebrtcPubsub extends utils.Adapter {
                 }
             }
         };
+        this.pubsubServer.addMessageListener(messageListener);
+        this.pubsubServer.addSubscriptionListener(subscriptionsListener);
         const cleanup = () => {
             this.pubsubServer.removeMessageListener(messageListener);
             this.pubsubServer.removeSubscriptionListener(subscriptionsListener);
