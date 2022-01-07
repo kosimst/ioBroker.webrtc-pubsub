@@ -54,7 +54,6 @@ class WebrtcPubsub extends utils.Adapter {
                     username: 'webrtc@live.com',
                 },
             ],
-            iceCandidatePoolSize: 10,
         },
     });
     private subscribedStates = new Set<string>();
@@ -140,12 +139,24 @@ class WebrtcPubsub extends utils.Adapter {
             this.setForeignState(topic, state);
         };
         const subscriptionsListener: SubscriptionListener = async (operation, topics) => {
-            if (operation) {
+            if (operation === 'subscribe') {
                 for (const topic of topics) {
                     const currentState = await this.getForeignStateAsync(topic);
                     if (!currentState) continue;
                     const { val } = currentState;
                     this.pubsubServer.publish(topic, { state: val });
+
+                    if (this.subscribedStates.has(topic)) continue;
+
+                    this.subscribedStates.add(topic);
+                    this.subscribeForeignStatesAsync(topic);
+                }
+            } else {
+                for (const topic of topics) {
+                    if (this.pubsubServer.subscribedTopics.has(topic) || !this.subscribedStates.has(topic)) continue;
+
+                    this.subscribedStates.delete(topic);
+                    this.unsubscribeForeignStatesAsync(topic);
                 }
             }
 
