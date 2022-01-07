@@ -74,7 +74,7 @@ class WebrtcPubsub extends utils.Adapter {
             return;
         }
         let parsedServiceAccount;
-        this.log.debug('Trying to use service account: ' + serviceAccount);
+        this.log.info('Trying to use service account: ' + serviceAccount);
         try {
             parsedServiceAccount = JSON.parse(serviceAccount);
             assertServiceAccount(parsedServiceAccount);
@@ -99,7 +99,7 @@ class WebrtcPubsub extends utils.Adapter {
             const docChanges = snapshot.docChanges();
             for (const docChange of docChanges) {
                 const { connectionId, signal } = docChange.doc.data();
-                this.log.debug(`New connection request "${connectionId}"`);
+                this.log.info(`New connection request "${connectionId}"`);
                 const peer = this.pubsubServer.createPeer();
                 peer.on('signal', (signal) => {
                     firestore.collection('connections').add({
@@ -114,7 +114,7 @@ class WebrtcPubsub extends utils.Adapter {
             }
         });
         const messageListener = (topic, { state }) => {
-            this.log.debug(`New message "${topic}: ${state}"`);
+            this.log.info(`New message "${topic}: ${state}"`);
             if (!isSupportedState(state))
                 return;
             this.setForeignState(topic, state);

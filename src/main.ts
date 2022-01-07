@@ -64,7 +64,7 @@ class WebrtcPubsub extends utils.Adapter {
         }
 
         let parsedServiceAccount;
-        this.log.debug('Trying to use service account: ' + serviceAccount);
+        this.log.info('Trying to use service account: ' + serviceAccount);
 
         try {
             parsedServiceAccount = JSON.parse(serviceAccount);
@@ -95,7 +95,7 @@ class WebrtcPubsub extends utils.Adapter {
                 for (const docChange of docChanges) {
                     const { connectionId, signal } = docChange.doc.data();
 
-                    this.log.debug(`New connection request "${connectionId}"`);
+                    this.log.info(`New connection request "${connectionId}"`);
 
                     const peer = this.pubsubServer.createPeer();
 
@@ -115,7 +115,7 @@ class WebrtcPubsub extends utils.Adapter {
             });
 
         const messageListener: MessageListener = (topic, { state }) => {
-            this.log.debug(`New message "${topic}: ${state}"`);
+            this.log.info(`New message "${topic}: ${state}"`);
 
             if (!isSupportedState(state)) return;
 
