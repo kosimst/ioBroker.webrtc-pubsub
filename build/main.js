@@ -74,7 +74,6 @@ class WebrtcPubsub extends utils.Adapter {
             return;
         }
         let parsedServiceAccount;
-        this.log.info('Trying to use service account: ' + serviceAccount);
         try {
             parsedServiceAccount = JSON.parse(serviceAccount);
             assertServiceAccount(parsedServiceAccount);
@@ -83,9 +82,17 @@ class WebrtcPubsub extends utils.Adapter {
             this.log.error(`Failed to parse service account: ${(e === null || e === void 0 ? void 0 : e.message) || e}`);
             return;
         }
-        firebase.initializeApp({
-            credential: parsedServiceAccount,
-        });
+        try {
+            firebase.initializeApp({
+                credential: firebase.credential.cert(parsedServiceAccount),
+            });
+        }
+        catch (e) {
+            this.log.error(`Failed to initialize firebase: ${(e === null || e === void 0 ? void 0 : e.message) || e}`);
+            this.log.info('Used service account: ' + serviceAccount);
+            this.log;
+            return;
+        }
         const firestore = firebase.firestore();
         let initial = true;
         const unsubscribeFirestore = firestore

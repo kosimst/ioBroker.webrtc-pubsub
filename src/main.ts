@@ -30,7 +30,7 @@ function isSupportedState(state: any): state is boolean | number | string {
     return typeof state === 'boolean' || typeof state === 'number' || typeof state === 'string';
 }
 
-function assertServiceAccount(obj: any): asserts obj is firebase.AppOptions['credential'] {
+function assertServiceAccount(obj: any): asserts obj is firebase.ServiceAccount {
     const hasAllRequiredKeys = requiredServiceAccountKeys.every((key) => key in obj);
 
     if (!hasAllRequiredKeys) {
@@ -64,7 +64,6 @@ class WebrtcPubsub extends utils.Adapter {
         }
 
         let parsedServiceAccount;
-        this.log.info('Trying to use service account: ' + serviceAccount);
 
         try {
             parsedServiceAccount = JSON.parse(serviceAccount);
@@ -74,9 +73,16 @@ class WebrtcPubsub extends utils.Adapter {
             return;
         }
 
-        firebase.initializeApp({
-            credential: parsedServiceAccount!,
-        });
+        try {
+            firebase.initializeApp({
+                credential: firebase.credential.cert(parsedServiceAccount!),
+            });
+        } catch (e: any) {
+            this.log.error(`Failed to initialize firebase: ${e?.message || e}`);
+            this.log.info('Used service account: ' + serviceAccount);
+            this.log;
+            return;
+        }
 
         const firestore = firebase.firestore();
 
