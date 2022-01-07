@@ -58,7 +58,23 @@ class WebrtcPubsub extends utils.Adapter {
             name: 'webrtc-pubsub',
         });
         this.cleanups = new Set();
-        this.pubsubServer = new webrtc_pubsub_server_1.default();
+        this.pubsubServer = new webrtc_pubsub_server_1.default({
+            webRTCConfig: {
+                iceServers: [
+                    {
+                        urls: 'turn:relay.backups.cz',
+                        credential: 'webrtc',
+                        username: 'webrtc',
+                    },
+                    {
+                        urls: 'turn:numb.viagenie.ca',
+                        credential: 'muazkh',
+                        username: 'webrtc@live.com',
+                    },
+                ],
+                iceCandidatePoolSize: 10,
+            },
+        });
         this.subscribedStates = new Set();
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));

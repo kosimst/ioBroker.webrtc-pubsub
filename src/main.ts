@@ -40,7 +40,23 @@ function assertServiceAccount(obj: any): asserts obj is firebase.ServiceAccount 
 
 class WebrtcPubsub extends utils.Adapter {
     private cleanups = new Set<CleanUpFn>();
-    private pubsubServer = new WebRTCPubSubServer();
+    private pubsubServer = new WebRTCPubSubServer({
+        webRTCConfig: {
+            iceServers: [
+                {
+                    urls: 'turn:relay.backups.cz',
+                    credential: 'webrtc',
+                    username: 'webrtc',
+                },
+                {
+                    urls: 'turn:numb.viagenie.ca',
+                    credential: 'muazkh',
+                    username: 'webrtc@live.com',
+                },
+            ],
+            iceCandidatePoolSize: 10,
+        },
+    });
     private subscribedStates = new Set<string>();
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
