@@ -161,21 +161,6 @@ class WebrtcPubsub extends utils.Adapter {
                     this.unsubscribeForeignStatesAsync(topic);
                 }
             }
-            const affectedStates = new Set(topics);
-            const currentSubscribedStates = new Set(this.subscribedStates);
-            const diff = operation === 'subscribe'
-                ? [...affectedStates].filter((topic) => !currentSubscribedStates.has(topic))
-                : [...currentSubscribedStates].filter((topic) => affectedStates.has(topic));
-            for (const topic of diff) {
-                if (operation === 'subscribe') {
-                    this.subscribedStates.add(topic);
-                    this.subscribeForeignStatesAsync(topic);
-                }
-                else {
-                    this.subscribedStates.delete(topic);
-                    this.unsubscribeForeignStatesAsync(topic);
-                }
-            }
         };
         this.pubsubServer.addMessageListener(messageListener);
         this.pubsubServer.addSubscriptionListener(subscriptionsListener);
