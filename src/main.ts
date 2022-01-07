@@ -117,8 +117,6 @@ class WebrtcPubsub extends utils.Adapter {
                 for (const docChange of docChanges) {
                     const { connectionId, signal } = docChange.doc.data();
 
-                    this.log.info(`New connection request "${connectionId}"`);
-
                     const peer = this.pubsubServer.createPeer();
 
                     peer.on('signal', (signal) => {
@@ -158,7 +156,6 @@ class WebrtcPubsub extends utils.Adapter {
                 operation === 'subscribe'
                     ? [...affectedStates].filter((topic) => !currentSubscribedStates.has(topic))
                     : [...currentSubscribedStates].filter((topic) => affectedStates.has(topic));
-            this.log.info(`Diff states: ${[...diff.values()].join(', ')}`);
 
             for (const topic of diff) {
                 if (operation === 'subscribe') {
@@ -196,21 +193,6 @@ class WebrtcPubsub extends utils.Adapter {
         }
     }
 
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
-
     /**
      * Is called if a subscribed state changes
      */
@@ -219,23 +201,6 @@ class WebrtcPubsub extends utils.Adapter {
             this.pubsubServer.publish(id, { state: state.val });
         }
     }
-
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  */
-    // private onMessage(obj: ioBroker.Message): void {
-    //     if (typeof obj === 'object' && obj.message) {
-    //         if (obj.command === 'send') {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info('send command');
-
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-    //         }
-    //     }
-    // }
 }
 
 if (module.parent) {

@@ -122,7 +122,6 @@ class WebrtcPubsub extends utils.Adapter {
             const docChanges = snapshot.docChanges();
             for (const docChange of docChanges) {
                 const { connectionId, signal } = docChange.doc.data();
-                this.log.info(`New connection request "${connectionId}"`);
                 const peer = this.pubsubServer.createPeer();
                 peer.on('signal', (signal) => {
                     firestore.collection('connections').add({
@@ -156,7 +155,6 @@ class WebrtcPubsub extends utils.Adapter {
             const diff = operation === 'subscribe'
                 ? [...affectedStates].filter((topic) => !currentSubscribedStates.has(topic))
                 : [...currentSubscribedStates].filter((topic) => affectedStates.has(topic));
-            this.log.info(`Diff states: ${[...diff.values()].join(', ')}`);
             for (const topic of diff) {
                 if (operation === 'subscribe') {
                     this.subscribedStates.add(topic);
@@ -190,20 +188,6 @@ class WebrtcPubsub extends utils.Adapter {
             callback();
         }
     }
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  */
-    // private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
     /**
      * Is called if a subscribed state changes
      */
