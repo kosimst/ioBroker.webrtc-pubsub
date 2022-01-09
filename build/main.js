@@ -148,14 +148,6 @@ class WebrtcPubsub extends utils.Adapter {
                     this.subscribeForeignStatesAsync(topic);
                 }
             }
-            else {
-                for (const topic of topics) {
-                    if (this.pubsubServer.subscribedTopics.has(topic) || !this.subscribedStates.has(topic))
-                        continue;
-                    this.subscribedStates.delete(topic);
-                    this.unsubscribeForeignStatesAsync(topic);
-                }
-            }
         };
         this.pubsubServer.addMessageListener(messageListener);
         this.pubsubServer.addSubscriptionListener(subscriptionsListener);
