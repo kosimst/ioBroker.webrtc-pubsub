@@ -62,14 +62,9 @@ class WebrtcPubsub extends utils.Adapter {
             webRTCConfig: {
                 iceServers: [
                     {
-                        urls: 'turn:relay.backups.cz',
-                        credential: 'webrtc',
-                        username: 'webrtc',
-                    },
-                    {
-                        urls: 'turn:numb.viagenie.ca',
-                        credential: 'muazkh',
-                        username: 'webrtc@live.com',
+                        urls: 'turn:3.68.69.247:3478',
+                        credential: 'iob',
+                        username: 'iob',
                     },
                 ],
             },
