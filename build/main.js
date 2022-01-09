@@ -67,6 +67,7 @@ class WebrtcPubsub extends utils.Adapter {
                         username: 'iob',
                     },
                 ],
+                iceTransportPolicy: 'relay',
             },
         });
         this.subscribedStates = new Set();
