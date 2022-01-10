@@ -58,9 +58,7 @@ class WebrtcPubsub extends utils.Adapter {
             name: 'webrtc-pubsub',
         });
         this.cleanups = new Set();
-        this.pubsubServer = new webrtc_pubsub_server_1.default({
-            webRTCConfig: JSON.parse(this.config.serviceAccount),
-        });
+        this.pubsubServer = new webrtc_pubsub_server_1.default();
         this.subscribedStates = new Set();
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -70,6 +68,9 @@ class WebrtcPubsub extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        this.pubsubServer = new webrtc_pubsub_server_1.default({
+            webRTCConfig: JSON.parse(this.config.serviceAccount),
+        });
         const { serviceAccount } = this.config;
         if (!serviceAccount) {
             this.log.error('No Service account defined');

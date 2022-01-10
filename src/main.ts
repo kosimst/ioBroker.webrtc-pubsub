@@ -40,9 +40,7 @@ function assertServiceAccount(obj: any): asserts obj is firebase.ServiceAccount 
 
 class WebrtcPubsub extends utils.Adapter {
     private cleanups = new Set<CleanUpFn>();
-    private pubsubServer = new WebRTCPubSubServer({
-        webRTCConfig: JSON.parse(this.config.serviceAccount),
-    });
+    private pubsubServer = new WebRTCPubSubServer();
     private subscribedStates = new Set<string>();
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -59,6 +57,10 @@ class WebrtcPubsub extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     private async onReady(): Promise<void> {
+        this.pubsubServer = new WebRTCPubSubServer({
+            webRTCConfig: JSON.parse(this.config.serviceAccount),
+        });
+
         const { serviceAccount } = this.config;
         if (!serviceAccount) {
             this.log.error('No Service account defined');
