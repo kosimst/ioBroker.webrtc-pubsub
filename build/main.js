@@ -61,13 +61,9 @@ class WebrtcPubsub extends utils.Adapter {
         this.pubsubServer = new webrtc_pubsub_server_1.default({
             webRTCConfig: {
                 iceServers: [
-                    {
-                        urls: 'turn:3.68.69.247:3478',
-                        credential: 'iob',
-                        username: 'iob',
-                    },
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'turn:0.peerjs.com:3478', username: 'peerjs', credential: 'peerjsp' },
                 ],
-                iceTransportPolicy: 'relay',
             },
         });
         this.subscribedStates = new Set();
