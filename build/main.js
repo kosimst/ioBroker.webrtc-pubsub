@@ -78,8 +78,8 @@ class WebrtcPubsub extends utils.Adapter {
         }
         let parsedServiceAccount;
         try {
-            parsedServiceAccount = JSON.parse(serviceAccount);
-            assertServiceAccount(parsedServiceAccount);
+            //parsedServiceAccount = JSON.parse(serviceAccount);
+            //assertServiceAccount(parsedServiceAccount);
         }
         catch (e) {
             this.log.error(`Failed to parse service account: ${(e === null || e === void 0 ? void 0 : e.message) || e}`);
